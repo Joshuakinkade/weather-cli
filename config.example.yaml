@@ -1,0 +1,9 @@
+apiURL: base url for OpenWeatherMap API
+apiToken: API token for OpenWeatherMap
+units: Metric|Imperial
+location:
+  name: Sandy
+  state: UT
+  country: US
+  lat: 40.5720,
+  lng: -111.8606

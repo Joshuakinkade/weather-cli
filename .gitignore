@@ -1,5 +1,8 @@
 # Executables
 weather.exe
 
+# Config
+config.yaml
+
 # GoLand stuff
 .idea
