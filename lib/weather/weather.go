@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -122,22 +123,22 @@ type Client struct {
 	client http.Client
 	apiURL string
 	apiKey string
+	units  string
 }
 
 // NewClient returns an initialized Client.
-func NewClient(apiURL, apiKey string) Client {
+func NewClient(apiURL, apiKey, units string) Client {
 	return Client{
 		client: http.Client{},
 		apiURL: apiURL,
 		apiKey: apiKey,
+		units:  strings.ToLower(units),
 	}
 }
 
 // Get requests the weather for a location given by latitude and longitude.
 func (c Client) Get(lat, lng float64) (Weather, error) {
-	url := fmt.Sprintf("%v/data/2.5/onecall?lat=%v&lon=%v&appid=%v&units=imperial", c.apiURL, lat, lng, c.apiKey)
-
-	fmt.Println(url)
+	url := fmt.Sprintf("%v/data/2.5/onecall?lat=%v&lon=%v&appid=%v&units=%v", c.apiURL, lat, lng, c.apiKey, c.units)
 
 	r, err := c.client.Get(url)
 	if err != nil {

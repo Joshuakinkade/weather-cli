@@ -12,7 +12,7 @@ import (
 	"weather/lib/weather"
 )
 
-const usage = `Usage:weather <location> [--current]`
+const usage = `Usage:weather [--location=<location>]`
 
 type Options struct {
 	Location string
@@ -41,8 +41,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	fmt.Printf("%+v\n", config)
-
 	/*************************************** Process Args ****************************************/
 	var opt Options
 	args := os.Args[1:]
@@ -59,39 +57,46 @@ func main() {
 	/**************************************** Get Location ***************************************/
 	lc := locations.NewGeocoder(config.APIURL, config.APIKey)
 
-	loc, err := locations.Parse(opt.Location)
-	if err != nil {
-		log.Fatalln(err)
+	var loc locations.Location
+	if opt.Location != "" {
+		loc, err = locations.Parse(opt.Location)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		loc = config.Location
 	}
 
-	ls, err := lc.GetCoords(loc)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	if len(ls) == 0 {
-		log.Fatalln("could not get location")
-	}
-
-	if len(ls) > 1 {
-		PrintLocations(ls)
-		fmt.Print("Choose a city from the options: ")
-
-		var i int
-		for i == 0 {
-			i, err = GetLocationChoice(len(ls))
-			if err != nil {
-				fmt.Print("Not a valid choice. Please choose another: ")
-			}
+	if loc.Lat == 0 || loc.Lng == 0 {
+		ls, err := lc.GetCoords(loc)
+		if err != nil {
+			log.Fatalln(err)
 		}
 
-		loc = ls[i-1]
-	} else {
-		loc = ls[0]
+		if len(ls) == 0 {
+			log.Fatalln("could not get location")
+		}
+
+		if len(ls) > 1 {
+			PrintLocations(ls)
+			fmt.Print("Choose a city from the options: ")
+
+			var i int
+			for i == 0 {
+				i, err = GetLocationChoice(len(ls))
+				if err != nil {
+					fmt.Print("Not a valid choice. Please choose another: ")
+				}
+			}
+
+			loc = ls[i-1]
+		} else {
+			loc = ls[0]
+		}
 	}
 
 	/**************************************** Get Weather *****************************************/
-	wc := weather.NewClient(config.APIURL, config.APIKey)
+	wc := weather.NewClient(config.APIURL, config.APIKey, config.Units)
 	w, err := wc.Get(loc.Lat, loc.Lng)
 	if err != nil {
 		log.Fatalln(err)
