@@ -1,5 +1,5 @@
 apiURL: base url for OpenWeatherMap API
-apiToken: API token for OpenWeatherMap
+apiKey: API token for OpenWeatherMap
 units: Metric|Imperial
 location:
   name: Sandy

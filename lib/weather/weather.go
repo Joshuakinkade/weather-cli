@@ -8,9 +8,6 @@ import (
 	"time"
 )
 
-const API_KEY = "e75f6b30e0e3c34cce758a7412b8ddbf"
-const API_BASE_URL = "https://api.openweathermap.org/data/2.5/onecall"
-
 // Timestamp represents the time for a weather forecast.
 type Timestamp time.Time
 
@@ -123,18 +120,24 @@ type Weather struct {
 // Client connects to OpenWeatherAPI.
 type Client struct {
 	client http.Client
+	apiURL string
+	apiKey string
 }
 
 // NewClient returns an initialized Client.
-func NewClient() Client {
+func NewClient(apiURL, apiKey string) Client {
 	return Client{
 		client: http.Client{},
+		apiURL: apiURL,
+		apiKey: apiKey,
 	}
 }
 
 // Get requests the weather for a location given by latitude and longitude.
 func (c Client) Get(lat, lng float64) (Weather, error) {
-	url := fmt.Sprintf("%v?lat=%v&lon=%v&appid=%v&units=imperial", API_BASE_URL, lat, lng, API_KEY)
+	url := fmt.Sprintf("%v/data/2.5/onecall?lat=%v&lon=%v&appid=%v&units=imperial", c.apiURL, lat, lng, c.apiKey)
+
+	fmt.Println(url)
 
 	r, err := c.client.Get(url)
 	if err != nil {

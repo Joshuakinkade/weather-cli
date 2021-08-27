@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/docopt/docopt-go"
+	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"weather/lib/formatter"
@@ -18,24 +19,32 @@ type Options struct {
 	Current  bool
 }
 
+type Config struct {
+	APIURL   string `yaml:"apiURL"`
+	APIKey   string `yaml:"apiKey"`
+	Location locations.Location
+	Units    string
+}
+
 func main() {
-	var opt Options
 	/*************************************** Load Config *****************************************/
-	//file, err := os.OpenFile("./config.yaml", os.O_RDONLY, 0755)
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//
-	//yd := yaml.NewDecoder(file)
-	//
-	//err = yd.Decode(&opt)
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//
-	//fmt.Println(opt)
+	var config Config
+	file, err := os.OpenFile("./config.yaml", os.O_RDONLY, 0755)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	yd := yaml.NewDecoder(file)
+
+	err = yd.Decode(&config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Printf("%+v\n", config)
 
 	/*************************************** Process Args ****************************************/
+	var opt Options
 	args := os.Args[1:]
 	usg, err := docopt.ParseArgs(usage, args, "0.1.0")
 	if err != nil {
@@ -48,7 +57,7 @@ func main() {
 	}
 
 	/**************************************** Get Location ***************************************/
-	lc := locations.NewGeocoder()
+	lc := locations.NewGeocoder(config.APIURL, config.APIKey)
 
 	loc, err := locations.Parse(opt.Location)
 	if err != nil {
@@ -82,7 +91,7 @@ func main() {
 	}
 
 	/**************************************** Get Weather *****************************************/
-	wc := weather.NewClient()
+	wc := weather.NewClient(config.APIURL, config.APIKey)
 	w, err := wc.Get(loc.Lat, loc.Lng)
 	if err != nil {
 		log.Fatalln(err)

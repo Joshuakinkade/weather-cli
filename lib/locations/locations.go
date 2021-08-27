@@ -10,9 +10,6 @@ import (
 	"strings"
 )
 
-const ApiKey = "e75f6b30e0e3c34cce758a7412b8ddbf"
-const ApiBaseUrl = "https://api.openweathermap.org/geo/1.0/direct"
-
 // LocationParseError represents an error with parsing a location string.
 type LocationParseError struct {
 	RawText string
@@ -110,18 +107,18 @@ type Geocoder struct {
 }
 
 // NewGeocoder returns an initialized Geocoder.
-func NewGeocoder() Geocoder {
+func NewGeocoder(apiURL, apiKey string) Geocoder {
 	return Geocoder{
 		client: http.Client{},
-		apiURL: ApiBaseUrl,
-		apiKey: ApiKey,
+		apiURL: apiURL,
+		apiKey: apiKey,
 	}
 }
 
 // GetCoords requests the coordinates for a location.
 func (g Geocoder) GetCoords(loc Location) ([]Location, error) {
 	term := loc.Format()
-	u := fmt.Sprintf("%v?q=%v&limit=5&appid=%v", g.apiURL, term, g.apiKey)
+	u := fmt.Sprintf("%v/geo/1.0/direct?q=%v&limit=5&appid=%v", g.apiURL, term, g.apiKey)
 
 	resp, err := g.client.Get(u)
 	if err != nil {
