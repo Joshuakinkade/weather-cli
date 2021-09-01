@@ -7,8 +7,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
-	"weather/lib/formatter"
 	"weather/lib/locations"
+	"weather/lib/tui"
 	"weather/lib/weather"
 )
 
@@ -35,7 +35,6 @@ func main() {
 	}
 
 	yd := yaml.NewDecoder(file)
-
 	err = yd.Decode(&config)
 	if err != nil {
 		log.Fatalln(err)
@@ -103,7 +102,15 @@ func main() {
 	}
 
 	/************************************** Print Results ****************************************/
-	formatter.PrettyPrint(w, loc)
+	//formatter.PrettyPrint(w, loc)
+
+	t := tui.TUI{}
+	err = t.Init()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	_ = t.PrintWeather(w, loc)
 }
 
 // PrintLocations prints the locations that matched a search.

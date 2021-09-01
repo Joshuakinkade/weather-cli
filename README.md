@@ -5,10 +5,18 @@ for different places.
 
 ## Goals
 
-This is a little project for me to work on after work. I like weather and I like doing stuff on 
-the command line, so this is a pretty fun project that I'll probably end up actually using a lot.
-I'd also like to be able to show the output in a tmux status bar.
+This is a little project for me to work on after work. I'm a bit of a weather nerd, so I like to 
+have quick access to weather conditions and forecasts. I think it would be handy to have a 
+simple command I can use for this rather than going to a website or opening an app.
 
+I'm planning on it having two modes of operation, which I might separate into two commands. One 
+would have a full feature TUI to show a lot of data all at once and maybe update it periodically.
+The other would take a format string and fill that string with data. That mode would be useful 
+for piping weather data into other programs, like tmux's status bar.
+
+## Todo
+- [ ] use location timezone for times.
+- [ ] 
 
 ## Data Source
 
@@ -17,7 +25,8 @@ get weather data and the geocoding API to get the latitude and longitude of loca
 
 ## Configuration
 
-Weather stores its configuration at `~/.weather` in yaml format.
+Weather stores its configuration at `~/.weather` in yaml format. This configuration contains the 
+information for the weather API and some defaults like location and units.
 
 ## Usage
 
@@ -29,7 +38,18 @@ Weather stores its configuration at `~/.weather` in yaml format.
 ```
 
 ## Output
-
 ```
+--------------------------------------------------------------------------------
 Weather in Sandy, UT
+--------------------------------------------------------------------------------
+                              Current Conditions
+
+Sunny                                  Rain Last Hour:  .05in
+
+Temperature: 45 F                      Feels Like: 42 F
+
+Wind from the NNW at 24MPH
+
+Humidity 50%                           Dew Point 35 F
+
 ```
