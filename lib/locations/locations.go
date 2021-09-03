@@ -35,7 +35,13 @@ func Parse(raw string) (Location, error) {
 		return Location{}, LocationParseError{RawText: raw}
 	}
 	var loc Location
-	ps := strings.Split(raw, ",")
+	rps := strings.Split(raw, ",")
+
+	var ps []string
+	for _, p := range rps {
+		ps = append(ps, strings.Trim(p, " "))
+	}
+
 	if len(ps) == 1 {
 		loc.Name = raw
 	}

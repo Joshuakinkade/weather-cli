@@ -12,7 +12,10 @@ import (
 	"weather/lib/weather"
 )
 
-const usage = `Usage:weather [--location=<location>]`
+const usage = `Usage:
+  weather <location>
+  weather
+`
 
 type Options struct {
 	Location string

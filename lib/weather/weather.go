@@ -46,7 +46,7 @@ type Current struct {
 	FeelsLike  float64 `json:"feels_like"`
 	Pressure   float64
 	Humidity   float64
-	DewPoint   float64
+	DewPoint   float64 `json:"dew_point"`
 	UVI        float64
 	Clouds     float64
 	Visibility float64

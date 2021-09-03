@@ -7,12 +7,30 @@ import (
 	"weather/lib/weather"
 )
 
+type Today struct {
+	High      float64
+	Low       float64
+	Condition weather.Condition
+	Sunrise   time.Time
+	Sunset    time.Time
+}
+
 func PrettyPrint(w weather.Weather, loc locations.Location) {
 	PrintLocation(loc)
 
 	if !w.Current.DT.IsZero() {
 		PrintCurrent(w.Current)
 	}
+
+	t := Today{
+		High:      w.Daily[0].Temp.Max,
+		Low:       w.Daily[0].Temp.Min,
+		Condition: w.Daily[0].Weather[0],
+		Sunrise:   time.Time(w.Current.Sunrise),
+		Sunset:    time.Time(w.Current.Sunset),
+	}
+
+	PrintToday(t)
 
 	fmt.Println("Hourly:")
 	for _, h := range w.Hourly[1:9] {
@@ -41,9 +59,19 @@ func PrintCurrent(c weather.Current) {
   %v
   Temperature: %v, Feels Like: %v
   Wind from the %v at %v
+  Relative Humidity: %v, Dew Point, %v
 
 `,
-		c.Weather[0].Main, FormatTemp(c.Temp), FormatTemp(c.FeelsLike), FormatWindDeg(c.WindDeg), FormatWindSpeed(c.WindSpeed))
+		c.Weather[0].Main, FormatTemp(c.Temp), FormatTemp(c.FeelsLike), FormatWindDeg(c.WindDeg), FormatWindSpeed(c.WindSpeed), FormatPercent(c.Humidity/100), FormatTemp(c.DewPoint))
+}
+
+func PrintToday(t Today) {
+	fmt.Printf(`Today:
+  %v
+  High: %v, Low %v
+  Sunrise: %v, Sunset: %v
+
+`, t.Condition.Main, t.High, t.Low, t.Sunrise.Format(time.Kitchen), t.Sunset.Format(time.Kitchen))
 }
 
 func PrintHour(h weather.Hourly) {
