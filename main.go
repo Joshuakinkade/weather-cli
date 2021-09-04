@@ -110,7 +110,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	_ = t.PrintWeather(w, loc)
+	t.Start(w, loc)
 }
 
 // PrintLocations prints the locations that matched a search.
