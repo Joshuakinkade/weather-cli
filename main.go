@@ -9,7 +9,6 @@ import (
 	"os"
 	"weather/lib/locations"
 	"weather/lib/tui"
-	"weather/lib/weather"
 )
 
 const usage = `Usage:weather [--location=<location>]`
@@ -94,23 +93,14 @@ func main() {
 		}
 	}
 
-	/**************************************** Get Weather *****************************************/
-	wc := weather.NewClient(config.APIURL, config.APIKey, config.Units)
-	w, err := wc.Get(loc.Lat, loc.Lng)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	/************************************** Print Results ****************************************/
-	//formatter.PrettyPrint(w, loc)
-
 	t := tui.TUI{}
-	err = t.Init()
+	err = t.Init(config.APIURL, config.APIKey, config.Units)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	t.Start(w, loc)
+	t.Start(loc)
 }
 
 // PrintLocations prints the locations that matched a search.
